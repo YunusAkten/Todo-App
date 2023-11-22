@@ -1,0 +1,56 @@
+@media screen and (max-width: 600px) {
+	.main {
+		width: 90vw;
+	}
+}
+@media screen and (min-width: 600px) {
+	.main {
+		width: 50%;
+	}
+}
+body {
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+		"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-image: url("./images/6.jpg");
+	background-repeat: no-repeat;
+}
+
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
+}
+#root {
+	min-height: 100vh !important;
+	display: flex;
+	align-items: center;
+}
+#completed {
+	text-decoration: line-through !important;
+	background-color: #a480ae;
+	border: 1px solid #a480ae !important;
+}
+.todoList {
+	overflow-y: auto;
+	color: black;
+	max-height: 50vh;
+}
+
+.todoText {
+	width: 90%;
+}
+
+.main{
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
+#selected{
+	background-color: #a480ae;
+	border: 1px solid #a480ae !important;
+}
+button:hover{
+	cursor: pointer;
+	background-color: #a480ae !important;
+}
