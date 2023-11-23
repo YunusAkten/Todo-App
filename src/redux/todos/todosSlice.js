@@ -1,39 +1,71 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+const endPoint = process.env.REACT_APP_API_BASE_ENDPOINT;
+// getTodoAsnyc
+export const getTodoAsnyc = createAsyncThunk("todos/getTodos", async () => {
+  const response = await fetch(`${endPoint}/todos`);
+
+  const data = await response.json();
+  return data;
+});
+// addTodoAsync
+export const addTodoAsync = createAsyncThunk("todos/addTodo", async (todo) => {
+  const response = await fetch(`${endPoint}/todos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(todo),
+  });
+  return await response.json();
+});
+// todoToggleAsync
+export const todoToggleAsync = createAsyncThunk(
+  "todos/todoToggle",
+  async (id) => {
+    const response = await fetch(`${endPoint}/todos/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await response.json();
+  }
+);
+//deleteTodoAsync
+export const deleteTodoAsync = createAsyncThunk(
+  "todos/deleteTodo",
+  async (id) => {
+    const response = await fetch(`${endPoint}/todos/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await response.json();
+  }
+);
+//clearCompletedAsync
+export const clearCompletedAsync = createAsyncThunk(
+  "todos/clearCompleted",
+  async () => {
+    const response = await fetch(`${endPoint}/todos`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await response.json();
+  }
+);
 export const todosSlice = createSlice({
   name: "todos",
   initialState: {
-    items: [
-      { id: 1, todoText: "Learn React", isCompleted: false },
-      { id: 2, todoText: "Meet friend for lunch", isCompleted: false },
-      { id: 3, todoText: "Build really cool todo app", isCompleted: false },
-    ],
+    items: [],
     activeFilter: "all",
+    isLoading: true,
+    error: null,
   },
   reducers: {
-    addTodo: {
-      reducer: (state, action) => {
-        state.items.push(action.payload);
-      },
-      prepare: ({ todoText }) => {
-        return {
-          payload: {
-            id: nanoid(),
-            todoText,
-            isCompleted: false,
-          },
-        };
-      },
-    },
-    toggle: (state, action) => {
-      const id = action.payload;
-      const todo = state.items.find((item) => item.id === id);
-      todo.isCompleted = !todo.isCompleted;
-    },
-    del: (state, action) => {
-      const id = action.payload;
-      const newItems = state.items.filter((item) => item.id !== id);
-      state.items = newItems;
-    },
     changeFilter: (state, action) => {
       state.activeFilter = action.payload;
     },
@@ -46,6 +78,48 @@ export const todosSlice = createSlice({
       }
     },
   },
+  extraReducers: {
+    //getTodoAsnyc
+    [getTodoAsnyc.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.items = action.payload;
+    },
+    [getTodoAsnyc.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message;
+    },
+    //addTodoAsync
+    [addTodoAsync.fulfilled]: (state, action) => {
+      state.items.push(action.payload);
+    },
+    [addTodoAsync.rejected]: (state, action) => {
+      state.error = action.error.message;
+    },
+    //todoToggleAsync
+    [todoToggleAsync.fulfilled]: (state, action) => {
+      const index = state.items.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.items[index] = action.payload;
+    },
+    [todoToggleAsync.rejected]: (state, action) => {
+      state.error = action.error.message;
+    },
+    //deleteTodoAsync
+    [deleteTodoAsync.fulfilled]: (state, action) => {
+      state.items = action.payload;
+    },
+    [deleteTodoAsync.rejected]: (state, action) => {
+      state.error = action.error.message;
+    },
+    //clearCompletedAsync
+    [clearCompletedAsync.fulfilled]: (state, action) => {
+      state.items = action.payload;
+    },
+    [clearCompletedAsync.rejected]: (state, action) => {
+      state.error = action.error.message;
+    },
+  },
 });
 export const selectTodos = (state) => state.todos.items;
 export const selectFiteredTodos = (state) => {
@@ -56,6 +130,5 @@ export const selectFiteredTodos = (state) => {
       : todo.isCompleted === true
   );
 };
-export const { addTodo, toggle, del, changeFilter, clearCompleted } =
-  todosSlice.actions;
+export const { changeFilter } = todosSlice.actions;
 export const todoReducer = todosSlice.reducer;

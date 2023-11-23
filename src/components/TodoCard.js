@@ -1,15 +1,15 @@
 import React from "react";
-import { toggle, del } from "../redux/todos/todosSlice";
+import { deleteTodoAsync, todoToggleAsync } from "../redux/todos/todosSlice";
 import { useDispatch } from "react-redux";
 function TodoCard({ todo }) {
   const dispatch = useDispatch();
-  function handleclick() {
-    dispatch(toggle(todo.id));
-  }
+  const handleclick = async () => {
+    await dispatch(todoToggleAsync(todo.id));
+  };
   function handleDelete(e) {
     e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this item?")) {
-      dispatch(del(todo.id));
+      dispatch(deleteTodoAsync(todo.id));
     }
   }
   return (
@@ -22,7 +22,7 @@ function TodoCard({ todo }) {
       <button
         onClick={handleDelete}
         type="button"
-        className="col-1 my-2 rounded btn    ms-auto"
+        className="col-1 my-2 rounded btn ms-auto"
       >
         X
       </button>

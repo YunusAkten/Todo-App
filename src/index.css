@@ -54,3 +54,9 @@ button:hover{
 	cursor: pointer;
 	background-color: #a480ae !important;
 }
+#liveToastBtn{
+	background-color: #a480ae !important;
+}
+#liveToast{
+	display: block;
+}

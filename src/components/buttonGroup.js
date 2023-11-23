@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { changeFilter, clearCompleted } from "../redux/todos/todosSlice";
+import { changeFilter, clearCompletedAsync } from "../redux/todos/todosSlice";
 function ButtonGroup() {
   const todos = useSelector((state) => state.todos.items);
   const todosLeft = todos.filter((todo) => !todo.isCompleted).length;
@@ -40,7 +40,7 @@ function ButtonGroup() {
       </div>
       <button
         onClick={() => {
-          dispatch(clearCompleted());
+          dispatch(clearCompletedAsync());
         }}
         className="col-lg-3 col-12 	    btn-outline-dark me-3 my-auto   ms-auto btn"
       >
